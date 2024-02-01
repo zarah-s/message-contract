@@ -1,4 +1,4 @@
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useDisconnect, useReadContract, useSwitchChain, useWriteContract } from "wagmi";
 import MessageCard from "./components/MessageCard";
 import { ContractData } from "./config/ContractData";
 import { useEffect, useRef, useState } from "react";
@@ -8,26 +8,43 @@ import { toast } from "react-toastify";
 import Loader from "./components/Loader";
 import ETH from "./assets/eth.svg"
 import Identicon from "@polkadot/react-identicon";
+import Popup from "reactjs-popup";
 const App = () => {
-  const { connect, } = useConnect()
+  const CHAINID = 11155111;
+
+  const { connect } = useConnect()
+  const {  switchChain,isError:errorSwitching } = useSwitchChain()
   const {  writeContract, isPending,isError,error,isSuccess } = useWriteContract()
-  const { isConnected, address } = useAccount()
+  const { isConnected, address,chain } = useAccount()
   const [loading, setLoading] = useState<boolean>(true)
   const [messages, setMessages] = useState<string[]>([])
   const contractAddress = import.meta.env.VITE_REACT_APP_CONTRACT_ADDRESS as `0x${string}`;
   const messageInputRef = useRef<HTMLTextAreaElement>(null)
+  const [networkDialog, setNetworkDialog] = useState<boolean>(false);
 
   if(isError){
     toast.error(error?.name)
   }
 
+  if(errorSwitching){
+     switchChain({chainId:CHAINID})
+
+  }
+
   if(isSuccess){
     toast.success("Message sent... waiting for confirmation")
-    setMessages([...messages,messageInputRef.current!.value.trim()])
     messageInputRef!.current!.value = "";
   }
   function submit() {
     if (!messageInputRef.current?.value.trim().length) return;
+    if(!isConnected){
+      toast.error("Connect wallet");
+      return;
+    }
+    if(!chain|| chain.id!== CHAINID){
+      switchChain({chainId:CHAINID})
+      return;
+    }
     writeContract({
       address: contractAddress,
 
@@ -41,7 +58,7 @@ const App = () => {
 
   }
 
-  const { data ,error:err,isStale,isFetching,isLoading:_loading} = useReadContract({
+  const { data } = useReadContract({
     address: contractAddress,
     abi: ContractData.abi,
     functionName: "getMessage",
@@ -51,19 +68,54 @@ const App = () => {
     }
   });
 
+  
 
+useEffect(() => {
+  if(!chain|| chain.id !==CHAINID){
+  if(isConnected){
+     setNetworkDialog(true)
+  }
+    }
+},[chain])
 
   useEffect(() => {
+
+    
     if (data && (data as any).length) {
       setLoading(false);
       setMessages(data as any[])
+
+      
     }
   }, [data])
 
-  console.log(data,err,isStale,_loading,isFetching,"data")
 
   return (
     <div>
+      <Popup closeOnDocumentClick={false} open={networkDialog}   closeOnEscape={false}>
+        <div className="flex items-center justify-center">
+          <div className="md:w-[calc(100vw/4)] w-full">
+            {/* <div className="bg-[rgba(0,0,0,.8)]  w-full h-full p-5 rounded-xl "> */}
+            <div className="flex w-full items-center   justify-center">
+              <div className="w-full bg-white p-5 rounded-3xl  border-[1.563px] border-[#383838]">
+                <h1 className="font-[800] text-4xl">Notice!!!</h1>
+                <p>Switch To the sepolia test network</p>
+                <button
+                  onClick={() => {
+                    setNetworkDialog(false);
+      switchChain({chainId:CHAINID})
+
+                  }}
+                  className="bg-gradient-to-l mt-5 outline-none w-full from-[#3F26D9] via-[#3F26D9] to-[#8A3FE7] text-white font-bold py-2.5 px-4 rounded-lg"
+                >
+                  Switch
+                </button>
+                {/* </div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Popup>
       <nav className="fixed top-0 w-full z-50 shadow-[#666] bg-[#0B0317] shadow py-3">
         <div className="container flex items-center justify-between">
            <div className="flex items-center gap-3">
@@ -83,10 +135,13 @@ const App = () => {
               toast.success("Copied address to clipboard")
             }} className="flex cursor-pointer items-center gap-2">
               <img src={ETH} className="w-5 h-5" alt="" />
-              <small>{` ${address?.slice(0, 7)}...${address?.slice(address.length - 5)}`  }</small>
+              <small>{`${chain?.name} ${address?.slice(0, 7)}...${address?.slice(address.length - 5)}`  }</small>
             </div>
 
-          </div> : <button className="bg-blue-500 text-sm text-white p-3 rounded-full" onClick={() => connect({ connector: metaMask() })}>Connect wallet</button>}
+          </div> : <button className="bg-blue-500 text-sm text-white p-3 rounded-full" onClick={() => {
+            connect({ connector: metaMask(),chainId:CHAINID });
+         
+          }}>Connect wallet</button>}
 
          </div>
         </div>

@@ -22,6 +22,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
     "dotenv": "^16.4.1",
-    "react-card-flip": "^1.2.2"
+    "react-card-flip": "^1.2.2",
+    "reactjs-popup": "^2.0.6"
   }
 }
