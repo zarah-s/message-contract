@@ -153,7 +153,7 @@ useEffect(() => {
             <Loader />
 
           </div> : <div className="container">
-          <p>Messages</p>
+          <p className="text-[#ccc] text-2xl mb-5">Messages:</p>
 
             <div className="grid grid-cols-3 gap-5">
               {
