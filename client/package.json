@@ -17,6 +17,7 @@
     "react-card-flip": "^1.2.2",
     "react-dom": "^18.2.0",
     "react-toastify": "^10.0.4",
+    "reactjs-popup": "^2.0.6",
     "viem": "^2.7.1",
     "wagmi": "^2.5.5"
   },
