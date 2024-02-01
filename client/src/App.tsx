@@ -41,12 +41,13 @@ const App = () => {
 
   }
 
-  const { data } = useReadContract({
+  const { data ,error:err} = useReadContract({
     address: contractAddress,
     abi: ContractData.abi,
     functionName: "getMessage",
     query:{
-      refetchInterval:1000
+      refetchInterval:1000,
+      retry:true
     }
   });
 
@@ -59,7 +60,7 @@ const App = () => {
     }
   }, [data])
 
-  console.log(data,"data")
+  console.log(data,err,"data")
 
   return (
     <div>
