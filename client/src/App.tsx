@@ -1,4 +1,4 @@
-import { useAccount, useDisconnect, useReadContract, useSwitchChain, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useSwitchChain, useWriteContract } from "wagmi";
 import MessageCard from "./components/MessageCard";
 import { ContractData } from "./config/ContractData";
 import { useEffect, useRef, useState } from "react";
