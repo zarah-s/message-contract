@@ -45,6 +45,9 @@ const App = () => {
     address: contractAddress,
     abi: ContractData.abi,
     functionName: "getMessage",
+    query:{
+      refetchInterval:1000
+    }
   });
 
 
