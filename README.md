@@ -1,12 +1,15 @@
-# Sample Hardhat Project
+# Message Dapp
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project aims at storing and retrieving messages, which is consumed on front-end side
+
+🚀Wagmi 🚀Hardhat
 
 Try running some of the following tasks:
 
 ```shell
-npx hardhat help
-npx hardhat test
+git clone 
+npm install 
+cd client && number install
 REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.ts
