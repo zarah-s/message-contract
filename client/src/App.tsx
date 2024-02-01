@@ -56,10 +56,11 @@ const App = () => {
     }
   }, [data])
 
+  console.log(data,"data")
+
   return (
     <div>
       <nav className="fixed top-0 w-full z-50 shadow-[#666] bg-[#0B0317] shadow py-3">
-        <div className="text-white">{contractAddress??"Hello"}</div>
         <div className="container flex items-center justify-between">
            <div className="flex items-center gap-3">
             <Identicon
