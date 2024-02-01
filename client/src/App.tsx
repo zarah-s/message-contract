@@ -6,17 +6,26 @@ import { useConnect, } from 'wagmi'
 import { metaMask } from "wagmi/connectors";
 import { toast } from "react-toastify";
 import Loader from "./components/Loader";
-
 import ETH from "./assets/eth.svg"
 import Identicon from "@polkadot/react-identicon";
 const App = () => {
   const { connect, } = useConnect()
-  const {  writeContract, isPending } = useWriteContract()
+  const {  writeContract, isPending,isError,error,isSuccess } = useWriteContract()
   const { isConnected, address, chain } = useAccount()
   const [loading, setLoading] = useState<boolean>(true)
   const [messages, setMessages] = useState<string[]>([])
   const contractAddress = import.meta.env.VITE_REACT_APP_CONTRACT_ADDRESS as `0x${string}`;
   const messageInputRef = useRef<HTMLTextAreaElement>(null)
+
+  if(isError){
+    toast.error(error?.name)
+  }
+
+  if(isSuccess){
+    toast.success("Message sent... waiting for confirmation")
+    setMessages([...messages,messageInputRef.current!.value.trim()])
+    messageInputRef!.current!.value = "";
+  }
   function submit() {
     if (!messageInputRef.current?.value.trim().length) return;
     writeContract({
@@ -28,11 +37,6 @@ const App = () => {
 
     })
 
-    if(!isPending){
-
-      toast.success("Message sent... waiting for confirmation")
-      messageInputRef.current.value = "";
-    }
 
 
   }
