@@ -41,7 +41,7 @@ const App = () => {
 
   }
 
-  const { data ,error:err} = useReadContract({
+  const { data ,error:err,isStale,isFetching,isLoading:_loading} = useReadContract({
     address: contractAddress,
     abi: ContractData.abi,
     functionName: "getMessage",
@@ -60,7 +60,7 @@ const App = () => {
     }
   }, [data])
 
-  console.log(data,err,"data")
+  console.log(data,err,isStale,_loading,isFetching,"data")
 
   return (
     <div>
