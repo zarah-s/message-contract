@@ -11,7 +11,7 @@ import Identicon from "@polkadot/react-identicon";
 const App = () => {
   const { connect, } = useConnect()
   const {  writeContract, isPending,isError,error,isSuccess } = useWriteContract()
-  const { isConnected, address, chain } = useAccount()
+  const { isConnected, address } = useAccount()
   const [loading, setLoading] = useState<boolean>(true)
   const [messages, setMessages] = useState<string[]>([])
   const contractAddress = import.meta.env.VITE_REACT_APP_CONTRACT_ADDRESS as `0x${string}`;
@@ -56,11 +56,10 @@ const App = () => {
     }
   }, [data])
 
-
   return (
     <div>
-
       <nav className="fixed top-0 w-full z-50 shadow-[#666] bg-[#0B0317] shadow py-3">
+        <div className="text-white">{contractAddress??"Hello"}</div>
         <div className="container flex items-center justify-between">
            <div className="flex items-center gap-3">
             <Identicon
@@ -79,7 +78,7 @@ const App = () => {
               toast.success("Copied address to clipboard")
             }} className="flex cursor-pointer items-center gap-2">
               <img src={ETH} className="w-5 h-5" alt="" />
-              <small>{` ${chain?.name} ${address?.slice(0, 7)}...${address?.slice(address.length - 5)}`  }</small>
+              <small>{` ${address?.slice(0, 7)}...${address?.slice(address.length - 5)}`  }</small>
             </div>
 
           </div> : <button className="bg-blue-500 text-sm text-white p-3 rounded-full" onClick={() => connect({ connector: metaMask() })}>Connect wallet</button>}
@@ -98,8 +97,8 @@ const App = () => {
 
             <div className="grid grid-cols-3 gap-5">
               {
-                messages.map(message => {
-                  return <MessageCard message={message} />;
+                messages.map((message,index) => {
+                  return <MessageCard key={index} message={message} />;
                 })
               }
 
